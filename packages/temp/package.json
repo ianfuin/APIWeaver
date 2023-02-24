@@ -1,0 +1,27 @@
+{
+  "name": "@apiweaver/temp",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "fuying.yfy <fuying.yfy@alibaba-inc.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npm.alibaba-inc.com"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@apiweaver/core": "0.0.1"
+  },
+  "devDependencies": {}
+}

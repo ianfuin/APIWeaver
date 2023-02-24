@@ -1,0 +1,16 @@
+{
+  "ignoredExtnames": [
+    ".img",
+    ".png",
+    ".gif",
+    ".jpg",
+    ".old",
+    ".eot",
+    ".ttf",
+    ".svg",
+    ".woff",
+    ".del",
+    ".bak",
+    ".map"
+  ]
+}
