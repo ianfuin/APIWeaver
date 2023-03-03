@@ -4,7 +4,7 @@ import {
   compileTypeScript,
   runTypeScriptCode,
   runTypeScriptFile,
-} from '../src/utils/tsnodeRunner';
+} from '../../src/utils/tsnodeRunner';
 
 describe('runTypeScriptFile', () => {
   it('should execute a TypeScript file without errors', () => {

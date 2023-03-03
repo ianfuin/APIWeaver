@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "调试ts程序",
       "runtimeArgs": ["-r", "ts-node/register"],
-      "args": ["${workspaceFolder}/packages/openapi/src/index.ts"]
+      "args": ["${workspaceFolder}/packages/core/src/index.ts"]
     }
   ]
 }

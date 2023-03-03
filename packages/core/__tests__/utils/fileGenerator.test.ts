@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-import { TreeNode, createDirAndFile } from '../src/utils/fileGenerator';
+import { TreeNode, createDirAndFile } from '../../src/utils/fileGenerator';
 
 describe('createDirAndFile', () => {
   const basePath = path.resolve(__dirname, 'test');
