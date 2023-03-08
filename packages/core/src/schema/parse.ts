@@ -1,16 +1,17 @@
 /**
  * JSONSchema 参数解析成对应的 TS 类型
  */
+import { isPlainObject, omit } from 'lodash/fp';
+
+import type { ReferenceSchemaMap } from './dereference';
 
 import {
   JSONSchema,
   JSONSchemaType,
   JSONSchemaDefinition,
   AST,
-  ParamAST,
-  T_ANY,
 } from './types/AST';
-import { isPlainObject, omit } from 'lodash';
+import { toSafeString } from './utils';
 
 export function isPrimitive(
   schema: JSONSchema | JSONSchemaType,
@@ -18,22 +19,34 @@ export function isPrimitive(
   return !isPlainObject(schema);
 }
 
-export function schemaParse(schema: JSONSchemaDefinition): AST {
+export function parse(
+  schema: JSONSchema,
+  referenceSchemaMap: ReferenceSchemaMap = new WeakMap(),
+): AST {
+  const standaloneName = toSafeString(schema.title || schema.$id);
+  return schemaParse(schema, referenceSchemaMap, standaloneName);
+}
+
+export function schemaParse(
+  schema: JSONSchemaDefinition,
+  referenceSchemaMap: ReferenceSchemaMap,
+  standaloneName?: string,
+): AST {
   if (!schema || typeof schema === 'boolean') {
-    return T_ANY;
+    return {
+      type: 'ANY',
+      standaloneName,
+    };
   }
 
-  const standaloneName = schema.title;
   const description = schema.description;
+  const refPath = referenceSchemaMap.get(schema);
 
-  // TODO $id $schema $comment
-  // TODO definitions $defs
-
-  if (schema.$ref) {
+  if (!standaloneName && refPath) {
     return {
       type: 'REFERENCE',
-      // TODO Parse $ref
-      refName: schema.$ref,
+      description,
+      standaloneName: toSafeString(schema.title || schema.$id),
     };
   }
 
@@ -45,10 +58,13 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       standaloneName,
       description,
       params: schema.type.map((type) => {
-        return schemaParse({
-          ...omit(maybeStripDefault(schema), '$id', 'description', 'title'),
-          type,
-        });
+        return schemaParse(
+          {
+            ...omit(['$id', 'description', 'title'], maybeStripDefault(schema)),
+            type,
+          },
+          referenceSchemaMap,
+        );
       }),
     };
   }
@@ -64,7 +80,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       standaloneName,
       description,
       params: schema.allOf.map((item) => {
-        return schemaParse(item);
+        return schemaParse(item, referenceSchemaMap);
       }),
     };
   }
@@ -74,7 +90,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       standaloneName,
       description,
       params: [...schema.anyOf, ...schema.oneOf].map((item) => {
-        return schemaParse(item);
+        return schemaParse(item, referenceSchemaMap);
       }),
     };
   }
@@ -91,12 +107,14 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       type: 'UNION',
       standaloneName,
       description,
-      params: [...schema.enum, schema.const].map((schemaType) => {
-        return {
-          type: 'LITERAL',
-          params: schemaType,
-        };
-      }),
+      params: [...schema.enum, schema.const]
+        .filter((_) => !!_)
+        .map((schemaType) => {
+          return {
+            type: 'LITERAL',
+            params: schemaType,
+          };
+        }),
     };
   }
 
@@ -173,11 +191,11 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
           type: 'TUPLE',
           standaloneName,
           description,
-          maxItems: schema.maxItems,
           minItems,
+          maxItems,
           params: Array(Math.max(maxItems, minItems) || 0)
-            .fill(T_ANY)
-            .concat(maxItems >= 0 ? [] : T_ANY),
+            .fill({ type: 'ANY' })
+            .concat(maxItems >= 0 ? [] : { type: 'ANY' }),
         };
       }
 
@@ -185,7 +203,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
         type: 'ARRAY',
         standaloneName,
         description,
-        params: T_ANY,
+        params: { type: 'ANY' },
       };
     }
 
@@ -193,10 +211,12 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       const minItems = schema.minItems;
       const maxItems = schema.maxItems;
 
-      const params = schema.items.map((item) => schemaParse(item));
+      const params = schema.items.map((item) =>
+        schemaParse(item, referenceSchemaMap),
+      );
       const additionalParams =
         schema.additionalItems === true || schema.additionalItems
-          ? schemaParse(schema.additionalItems)
+          ? schemaParse(schema.additionalItems, referenceSchemaMap)
           : [];
 
       return {
@@ -205,7 +225,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
         description,
         minItems: minItems,
         maxItems: maxItems,
-        params: params.concat(additionalParams) as ParamAST[],
+        params: params.concat(additionalParams),
       };
     }
 
@@ -213,7 +233,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
       type: 'ARRAY',
       standaloneName,
       description,
-      params: schemaParse(schema.items) as ParamAST,
+      params: schemaParse(schema.items, referenceSchemaMap),
     };
   }
 
@@ -232,7 +252,7 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
         description,
         params: Object.entries(schema.properties).map(([key, value]) => {
           return {
-            ast: schemaParse(value) as ParamAST,
+            ast: schemaParse(value, referenceSchemaMap),
             keyName: key,
             isRequired: schema.required?.includes(key),
             isReadOnly: typeof value === 'object' && value.readOnly,
@@ -249,7 +269,11 @@ export function schemaParse(schema: JSONSchemaDefinition): AST {
     };
   }
 
-  return T_ANY;
+  return {
+    type: 'ANY',
+    description,
+    standaloneName,
+  };
 }
 
 export function maybeStripDefault(schema: JSONSchema): JSONSchema {

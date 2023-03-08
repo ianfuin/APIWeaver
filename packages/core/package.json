@@ -25,7 +25,9 @@
     "build": "tsc"
   },
   "dependencies": {
-    "fs-extra": "^11.1.0"
+    "@apidevtools/json-schema-ref-parser": "^10.1.0",
+    "fs-extra": "^11.1.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1"
