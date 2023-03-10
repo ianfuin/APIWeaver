@@ -8,9 +8,14 @@
       "type": "node",
       "request": "launch",
       "name": "调试ts程序",
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "runtimeExecutable": "/usr/local/bin/node",
-      "args": ["${workspaceFolder}/packages/core/src/schema/index.ts"]
+      "args": [
+        "${workspaceFolder}/${relativeFile}"
+      ]
     }
   ]
 }

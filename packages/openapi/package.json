@@ -6,7 +6,8 @@
   "homepage": "",
   "license": "MIT",
   "main": "./dist/index.js",
-  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "source": "./src/index.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"
@@ -21,8 +22,8 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@apiweaver/core": "0.0.1",
     "@apidevtools/swagger-parser": "^10.1.0",
-    "json-schema-to-typescript": "^11.0.4",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

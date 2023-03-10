@@ -1,8 +1,7 @@
-import type { OpenAPIV3_1 } from 'openapi-types';
+import type { JSONSchema } from '@apiweaver/core';
 import { groupBy } from 'lodash/fp';
-import type { JSONSchema } from 'json-schema-to-typescript';
 
-type OpenAPIV3_1_JSON = OpenAPIV3_1.Document;
+import type { OpenAPIJSON } from './types/openapi';
 
 interface TreeNodeBase {
   type: 'folder' | 'file';
@@ -35,7 +34,7 @@ interface APIObject {
   paths?: PathObject[];
 }
 
-export function buildFileTree(openapiJSON: OpenAPIV3_1_JSON) {
+export function buildFileTree(openapiJSON: OpenAPIJSON) {
   if (!openapiJSON) return null;
 
   //   const { info, tags, paths, components } = openapiJSON;

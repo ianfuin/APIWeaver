@@ -62,9 +62,9 @@ export interface AbstractAST {
 
 export interface TString extends AbstractAST {
   type: 'STRING';
-  format?: string | undefined;
-  contentMediaType?: string | undefined;
-  contentEncoding?: string | undefined;
+  format?: string;
+  contentMediaType?: string;
+  contentEncoding?: string;
 }
 
 export interface TNumber extends AbstractAST {
@@ -93,7 +93,7 @@ export interface TTuple extends AbstractAST {
   type: 'TUPLE';
   params: AST[];
   minItems: number;
-  maxItems?: number | undefined;
+  maxItems?: number;
 }
 
 /** Union & INTERSECTION */
@@ -110,7 +110,7 @@ export interface TIntersection extends AbstractAST {
 /** Literal 字面量类型 */
 export interface TLiteral {
   type: 'LITERAL';
-  params: JSONSchemaType;
+  params: JSONSchemaType | 'any';
 }
 
 /** ANY */
@@ -126,14 +126,13 @@ export interface TReference extends AbstractAST {
 /** Interface  */
 export interface TInterface extends AbstractAST {
   type: 'INTERFACE';
-  standaloneName: string;
   params: TInterfaceParam[];
 }
 
 export interface TInterfaceParam {
   ast: AST;
   keyName: string;
-  description?: string | undefined;
-  isRequired?: boolean | undefined;
-  isReadOnly?: boolean | undefined;
+  description?: string;
+  isRequired?: boolean;
+  isReadOnly?: boolean;
 }

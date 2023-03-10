@@ -91,7 +91,7 @@ function generateRawType(ast: AST): string {
     case 'LITERAL':
       return JSON.stringify(ast.params);
     case 'REFERENCE':
-      return ast.standaloneName;
+      return ast.standaloneName || '';
 
     case 'ARRAY':
       return (() => {
@@ -105,18 +105,14 @@ function generateRawType(ast: AST): string {
         const astParams = [...ast.params];
         let spreadParam: TAny;
 
-        if (
-          minItems > 0 &&
-          minItems > astParams.length &&
-          spreadParam === undefined
-        ) {
+        if (minItems > 0 && minItems > astParams.length) {
           // this is a valid state, and JSONSchema doesn't care about the item type
           if (maxItems < 0) {
             // no max items and no spread param, so just spread any
             spreadParam = { type: 'ANY' };
           }
         }
-        if (maxItems > astParams.length && spreadParam === undefined) {
+        if (maxItems > astParams.length) {
           // this is a valid state, and JSONSchema doesn't care about the item type
           // fill the tuple with any elements
           for (let i = astParams.length; i < maxItems; i += 1) {

@@ -89,7 +89,7 @@ export function schemaParse(
       type: 'UNION',
       standaloneName,
       description,
-      params: [...schema.anyOf, ...schema.oneOf].map((item) => {
+      params: [...(schema.anyOf ?? []), ...(schema.oneOf ?? [])].map((item) => {
         return schemaParse(item, referenceSchemaMap);
       }),
     };
@@ -107,12 +107,12 @@ export function schemaParse(
       type: 'UNION',
       standaloneName,
       description,
-      params: [...schema.enum, schema.const]
+      params: [...(schema.enum ?? []), schema.const]
         .filter((_) => !!_)
         .map((schemaType) => {
           return {
             type: 'LITERAL',
-            params: schemaType,
+            params: schemaType || 'any',
           };
         }),
     };
@@ -181,7 +181,7 @@ export function schemaParse(
    */
   if (schema.type === 'array' || Array.isArray(schema.default)) {
     if (!schema.items || typeof schema.items === 'boolean') {
-      const minItems = schema.minItems;
+      const minItems = schema.minItems || -1;
       const maxItems =
         typeof schema.maxItems === 'number' ? schema.maxItems : -1;
 
@@ -208,8 +208,8 @@ export function schemaParse(
     }
 
     if (Array.isArray(schema.items)) {
-      const minItems = schema.minItems;
-      const maxItems = schema.maxItems;
+      const minItems = schema.minItems || -1;
+      const maxItems = schema.maxItems || -1;
 
       const params = schema.items.map((item) =>
         schemaParse(item, referenceSchemaMap),
@@ -256,7 +256,8 @@ export function schemaParse(
             keyName: key,
             isRequired: schema.required?.includes(key),
             isReadOnly: typeof value === 'object' && value.readOnly,
-            description: typeof value === 'object' && value.description,
+            description:
+              typeof value === 'object' ? value.description : undefined,
           };
         }),
       };

@@ -1,7 +1,7 @@
 import { upperFirst, deburr, trim } from 'lodash/fp';
 import { basename, extname } from 'path';
 
-export function toSafeString(string: string) {
+export function toSafeString(string?: string) {
   // identifiers in javaScript/ts:
   // First character: a-zA-Z | _ | $
   // Rest: a-zA-Z | _ | $ | 0-9

@@ -6,11 +6,16 @@ import { dereference } from './dereference';
 import { parse } from './parse';
 import { generate } from './generate';
 
-export async function compile(schema: JSONSchema): Promise<{
+export async function compile(
+  schema: JSONSchema,
+  baseName?: string,
+): Promise<{
   schemaCodeStr: string;
   referenceCodeStr: string[];
 }> {
   const _schema = cloneDeep(schema);
+
+  _schema.title = baseName;
 
   /** dereference */
   const { referenceSchemaMap, referencePathMap, dereferencedSchema } =

@@ -5,12 +5,9 @@
   "author": "fuying.yfy <fuying.yfy@alibaba-inc.com>",
   "homepage": "",
   "license": "MIT",
-  "source": "./src/index.ts",
-  "exports": "./dist/index.modern.js",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "source": "./src/index.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"

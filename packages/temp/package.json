@@ -6,7 +6,8 @@
   "homepage": "",
   "license": "MIT",
   "main": "./dist/index.js",
-  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "source": "./src/index.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"
