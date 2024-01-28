@@ -1,6 +1,4 @@
 /** schemaCompile */
-export { compile } from './schemaCompile';
-
 export type {
   JSONSchema,
   JSONSchemaType,
@@ -9,12 +7,37 @@ export type {
   AST,
   AST_TYPE,
 } from './schemaCompile/types/AST';
+export { compileSchema, getReferenceCodeStr } from './schemaCompile';
 
 /** standardModel */
 export type {
-  StandardModel,
   HttpMethods,
   ResponseCode,
   RequestParameterPosition,
   MediaType,
-} from './standardModel';
+  StandardModel,
+  StandardModelApi,
+  CompiledStandardModel,
+  CompiledStandardModelApi,
+} from './types/standardModel';
+
+/** treeNode */
+export {
+  type TreeNodeBase,
+  type TreeNodeFile,
+  type TreeNodeDirectory,
+  type TreeNode,
+} from './types/treeNode';
+
+/** manager */
+export { Manager } from './manager/index';
+export { OriginManager } from './manager/OriginManager';
+
+/** plugin */
+export type { PluginHooks, Plugin } from './plugin';
+export { definePlugin } from './plugin';
+export { defalutPlugin } from './plugin/default';
+
+/** config */
+export type { UserOriginConfig, UserConfig, UserConfigExport } from './config';
+export { defineConfig, getCurrentConfig, loadConfigFromFile } from './config';

@@ -2,7 +2,7 @@
   "name": "@apiweaver/openapi",
   "version": "0.0.1",
   "description": "> TODO: description",
-  "author": "fuying.yfy <fuying.yfy@alibaba-inc.com>",
+  "author": "fuying.yfy",
   "homepage": "",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -22,8 +22,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@apiweaver/core": "0.0.1",
     "@apidevtools/swagger-parser": "^10.1.0",
+    "@apiweaver/core": "0.0.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

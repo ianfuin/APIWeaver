@@ -1,0 +1,38 @@
+{
+  "name": "@apiweaver/demo",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "fuying.yfy",
+  "homepage": "",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "source": "./src/index.ts",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npm.alibaba-inc.com"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node --project tsconfig.json src/index.ts",
+    "demo1": "ts-node --project tsconfig.json src/demo1/index.ts"
+  },
+  "dependencies": {
+    "@apiweaver/core": "0.0.1",
+    "@apiweaver/openapi": "0.0.1",
+    "@koa/router": "^12.0.0",
+    "koa": "^2.14.2",
+    "prettier": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.10",
+    "@types/koa__router": "^12.0.0",
+    "@types/prettier": "^3.0.0"
+  }
+}

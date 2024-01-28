@@ -91,7 +91,7 @@ function generateRawType(ast: AST): string {
     case 'LITERAL':
       return JSON.stringify(ast.params);
     case 'REFERENCE':
-      return ast.standaloneName || '';
+      return ast.refStandaloneName || '';
 
     case 'ARRAY':
       return (() => {
@@ -191,5 +191,8 @@ function generateRawType(ast: AST): string {
 
     case 'INTERFACE':
       return generateInterfaceParamsCode(ast);
+
+    case 'FILE':
+      return 'File';
   }
 }

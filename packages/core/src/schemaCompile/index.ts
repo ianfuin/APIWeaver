@@ -1,39 +1,55 @@
-import { cloneDeep } from 'lodash/fp';
-
 import type { JSONSchema } from './types/AST';
+import type { CompiledStandardModel } from '../types/standardModel';
 
-import { dereference } from './dereference';
 import { parse } from './parse';
 import { generate } from './generate';
 
-export async function compile(
-  schema: JSONSchema,
-  baseName?: string,
-): Promise<{
-  schemaCodeStr: string;
-  referenceCodeStr: string[];
-}> {
-  const _schema = cloneDeep(schema);
+export type CompileSchemaResult = {
+  standaloneName: string;
+  referencePaths: string[];
+  schema: JSONSchema;
+  getCodeStr: () => string;
+};
 
-  _schema.title = baseName;
-
-  /** dereference */
-  const { referenceSchemaMap, referencePathMap, dereferencedSchema } =
-    await dereference(_schema);
+export function compileSchema(
+  schema?: JSONSchema,
+): CompileSchemaResult | undefined {
+  if (!schema) return undefined;
 
   /** parse */
-  const schemaParsed = parse(dereferencedSchema, referenceSchemaMap);
-  const referenceParsed = [...referencePathMap.values()].map((value) => {
-    return parse(value, referenceSchemaMap);
+  const { standaloneName, referencePath, ast } = parse(schema);
+
+  return {
+    standaloneName,
+    referencePaths: Array.from(referencePath),
+    schema,
+    getCodeStr: () => generate(ast),
+  };
+}
+
+export function getReferenceCodeStr(
+  compiledStandardModel: CompiledStandardModel,
+  compileSchemaResults?: (CompileSchemaResult | undefined)[],
+) {
+  const dereferencePathMap = compiledStandardModel.dereferencePathMap;
+  let schemaRefs: string[] = [];
+  let pathMapRefs: string[] = [];
+
+  if (Array.isArray(compileSchemaResults)) {
+    compileSchemaResults.forEach((res) => {
+      if (res) {
+        schemaRefs = schemaRefs.concat(res.referencePaths);
+      }
+    });
+  }
+
+  schemaRefs.forEach((path) => {
+    pathMapRefs = pathMapRefs.concat(
+      dereferencePathMap.get(path)?.referencePaths ?? [],
+    );
   });
 
-  /** generate */
-  const schemaCodeStr: string = generate(schemaParsed);
-  const referenceCodeStr: string[] = referenceParsed.map((ast) =>
-    generate(ast),
+  return [...new Set([...schemaRefs, ...pathMapRefs])].map(
+    (path) => dereferencePathMap.get(path)?.getCodeStr() ?? '',
   );
-
-  referencePathMap.clear();
-
-  return { schemaCodeStr, referenceCodeStr };
 }

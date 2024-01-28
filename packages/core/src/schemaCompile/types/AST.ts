@@ -26,7 +26,8 @@ export type AST =
   | TLiteral
   //
   | TReference
-  | TInterface;
+  | TInterface
+  | TFile;
 
 export type AST_TYPE = AST['type'];
 
@@ -121,6 +122,7 @@ export interface TAny extends AbstractAST {
 /** Reference */
 export interface TReference extends AbstractAST {
   type: 'REFERENCE';
+  refStandaloneName: string;
 }
 
 /** Interface  */
@@ -135,4 +137,8 @@ export interface TInterfaceParam {
   description?: string;
   isRequired?: boolean;
   isReadOnly?: boolean;
+}
+
+export interface TFile extends AbstractAST {
+  type: 'FILE';
 }

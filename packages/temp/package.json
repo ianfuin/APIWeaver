@@ -2,7 +2,7 @@
   "name": "@apiweaver/temp",
   "version": "0.0.1",
   "description": "> TODO: description",
-  "author": "fuying.yfy <fuying.yfy@alibaba-inc.com>",
+  "author": "fuying.yfy",
   "homepage": "",
   "license": "MIT",
   "main": "./dist/index.js",

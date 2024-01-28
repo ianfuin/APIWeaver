@@ -2,7 +2,10 @@
   "name": "@apiweaver/core",
   "version": "0.0.1",
   "description": "> TODO: description",
-  "author": "fuying.yfy <fuying.yfy@alibaba-inc.com>",
+  "bin": {
+    "aw": "bin/aw.js"
+  },
+  "author": "fuying.yfy",
   "homepage": "",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -19,14 +22,27 @@
     "registry": "http://registry.npm.alibaba-inc.com"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "aw": "aw"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^10.1.0",
+    "@inquirer/prompts": "^3.2.0",
+    "axios": "^1.6.0",
+    "cac": "^6.7.14",
+    "debug": "^4.3.4",
+    "esbuild": "^0.19.5",
     "fs-extra": "^11.1.0",
-    "lodash": "^4.17.21"
+    "json-diff": "^1.0.6",
+    "lodash": "^4.17.21",
+    "picocolors": "^1.0.0",
+    "prettier": "^3.0.3",
+    "vite": "^4.5.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.1"
+    "@types/debug": "^4.1.10",
+    "@types/fs-extra": "^11.0.1",
+    "@types/json-diff": "^1.0.0",
+    "@types/lodash": "^4.14.199",
+    "@types/prettier": "^3.0.0"
   }
 }

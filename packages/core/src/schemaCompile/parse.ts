@@ -3,15 +3,16 @@
  */
 import { isPlainObject, omit } from 'lodash/fp';
 
-import type { ReferenceSchemaMap } from './dereference';
-
 import {
   JSONSchema,
   JSONSchemaType,
   JSONSchemaDefinition,
   AST,
 } from './types/AST';
-import { toSafeString } from './utils';
+import { justName, toSafeString } from '../utils';
+
+export type ReferencePathMap = Map<string, JSONSchema>;
+export type DeferencePathMap = Map<string, JSONSchema>;
 
 export function isPrimitive(
   schema: JSONSchema | JSONSchemaType,
@@ -19,17 +20,23 @@ export function isPrimitive(
   return !isPlainObject(schema);
 }
 
-export function parse(
-  schema: JSONSchema,
-  referenceSchemaMap: ReferenceSchemaMap = new WeakMap(),
-): AST {
-  const standaloneName = toSafeString(schema.title || schema.$id);
-  return schemaParse(schema, referenceSchemaMap, standaloneName);
+export function parse(schema: JSONSchema): {
+  standaloneName: string;
+  ast: AST;
+  referencePath: Set<string>;
+} {
+  const standaloneName = toSafeString(schema.title) ?? '';
+  const referencePath = new Set<string>();
+  return {
+    standaloneName,
+    referencePath,
+    ast: schemaParse(schema, referencePath, standaloneName),
+  };
 }
 
 export function schemaParse(
   schema: JSONSchemaDefinition,
-  referenceSchemaMap: ReferenceSchemaMap,
+  referencePath: Set<string>,
   standaloneName?: string,
 ): AST {
   if (!schema || typeof schema === 'boolean') {
@@ -40,13 +47,16 @@ export function schemaParse(
   }
 
   const description = schema.description;
-  const refPath = referenceSchemaMap.get(schema);
 
-  if (!standaloneName && refPath) {
+  const refPath = schema.$ref;
+
+  if (refPath) {
+    referencePath.add(refPath);
     return {
       type: 'REFERENCE',
       description,
-      standaloneName: toSafeString(schema.title || schema.$id),
+      standaloneName,
+      refStandaloneName: justName(refPath),
     };
   }
 
@@ -63,7 +73,7 @@ export function schemaParse(
             ...omit(['$id', 'description', 'title'], maybeStripDefault(schema)),
             type,
           },
-          referenceSchemaMap,
+          referencePath,
         );
       }),
     };
@@ -80,7 +90,7 @@ export function schemaParse(
       standaloneName,
       description,
       params: schema.allOf.map((item) => {
-        return schemaParse(item, referenceSchemaMap);
+        return schemaParse(item, referencePath);
       }),
     };
   }
@@ -90,7 +100,7 @@ export function schemaParse(
       standaloneName,
       description,
       params: [...(schema.anyOf ?? []), ...(schema.oneOf ?? [])].map((item) => {
-        return schemaParse(item, referenceSchemaMap);
+        return schemaParse(item, referencePath);
       }),
     };
   }
@@ -212,11 +222,11 @@ export function schemaParse(
       const maxItems = schema.maxItems || -1;
 
       const params = schema.items.map((item) =>
-        schemaParse(item, referenceSchemaMap),
+        schemaParse(item, referencePath),
       );
       const additionalParams =
         schema.additionalItems === true || schema.additionalItems
-          ? schemaParse(schema.additionalItems, referenceSchemaMap)
+          ? schemaParse(schema.additionalItems, referencePath)
           : [];
 
       return {
@@ -233,7 +243,7 @@ export function schemaParse(
       type: 'ARRAY',
       standaloneName,
       description,
-      params: schemaParse(schema.items, referenceSchemaMap),
+      params: schemaParse(schema.items, referencePath),
     };
   }
 
@@ -252,7 +262,7 @@ export function schemaParse(
         description,
         params: Object.entries(schema.properties).map(([key, value]) => {
           return {
-            ast: schemaParse(value, referenceSchemaMap),
+            ast: schemaParse(value, referencePath),
             keyName: key,
             isRequired: schema.required?.includes(key),
             isReadOnly: typeof value === 'object' && value.readOnly,
@@ -263,10 +273,36 @@ export function schemaParse(
       };
     }
 
+    if (
+      schema.items &&
+      !Array.isArray(schema.items) &&
+      typeof schema.items !== 'boolean'
+    ) {
+      const refPath = schema.items.$ref;
+
+      if (refPath) {
+        referencePath.add(refPath);
+        return {
+          type: 'REFERENCE',
+          description,
+          standaloneName,
+          refStandaloneName: justName(refPath),
+        };
+      }
+    }
+
     return {
       type: 'OBJECT',
       standaloneName,
       description,
+    };
+  }
+
+  if (schema.type == 'file') {
+    return {
+      type: 'FILE',
+      description,
+      standaloneName,
     };
   }
 

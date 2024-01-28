@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "packages/*"
+    "packages/*/**"
   ],
   "lint-staged": {
     "packages/*/src/**/*.{js,jsx,ts,tsx}": [
@@ -28,6 +28,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/prettier": "^3.0.0",
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
