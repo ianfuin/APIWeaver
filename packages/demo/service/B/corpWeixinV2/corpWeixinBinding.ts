@@ -1,0 +1,18 @@
+export interface MobileBindedUserInfo {
+  mobileUserId?: string;
+  mobileUserName?: string;
+}
+export interface Query {
+  /**
+   * code
+   */
+  code: string;
+}
+
+/**
+ * OK
+ */
+export type Response = MobileBindedUserInfo;
+
+const path = '/api/v2/organization/corpweixin/binding';
+const method = 'get';

@@ -22,11 +22,11 @@ export type {
 } from './types/standardModel';
 
 /** treeNode */
-export {
-  type TreeNodeBase,
-  type TreeNodeFile,
-  type TreeNodeDirectory,
-  type TreeNode,
+export type {
+  TreeNodeBase,
+  TreeNodeFile,
+  TreeNodeDirectory,
+  TreeNode,
 } from './types/treeNode';
 
 /** manager */

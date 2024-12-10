@@ -41,7 +41,7 @@ export default defineConfig({
       ],
     },
   ],
-  generateDirAndFileOptions:{
+  generateDirAndFileOptions: {
     prettierOptions: {
       tabWidth: 2,
       semi: true,
@@ -49,7 +49,6 @@ export default defineConfig({
       singleQuote: true,
       printWidth: 80,
     },
- 
   },
   buildTreeNodeDirectoryOptions: {
     usingOperationId: true,

@@ -18,6 +18,9 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
   },
   "include": ["src"]
 }

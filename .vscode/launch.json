@@ -12,7 +12,7 @@
         "-r",
         "ts-node/register"
       ],
-      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeExecutable": "/Users/ianfuin/.nvm/versions/node/v16.20.2/bin/node",
       "args": [
         "${workspaceFolder}/${relativeFile}"
       ]

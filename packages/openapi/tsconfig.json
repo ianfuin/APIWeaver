@@ -4,6 +4,9 @@
     "target": "es6",
     "outDir": "dist",
     "moduleResolution": "node",
+    "lib": [
+      "ES2017"
+    ],
     "esModuleInterop": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -19,6 +22,11 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "strict": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

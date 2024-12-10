@@ -1,15 +1,11 @@
 import path from 'node:path';
-import fs from 'node:fs';
 
 import Koa from 'koa';
 import Router from '@koa/router';
 import staticServe from 'koa-static';
 
 class ResponseBodyBase<T = unknown> {
-  constructor(
-    protected code: number,
-    protected data: T,
-  ) {}
+  constructor(protected code: number, protected data: T) {}
 }
 
 interface RouterConfig {
