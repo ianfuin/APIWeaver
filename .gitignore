@@ -1,5 +1,2 @@
-node_modules/
-packages/**/*.tsbuildinfo
-packages/**/dist
-packages/**/dist
-coverage
+node_modules
+service
